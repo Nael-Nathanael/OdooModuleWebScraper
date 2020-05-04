@@ -21,19 +21,11 @@ public class OdooWebCrawler {
 
     public static void main(String[] args) throws IOException {
         ArrayList<String> pageLinks = new ArrayList<>();
-        pageLinks.add(
-                "https://www.odoo.com/apps/modules/category/Purchases/browse/page/1?price=Free&series=12.0"
-        );
-        pageLinks.add(
-                "https://www.odoo.com/apps/modules/category/Purchases/browse/page/2?price=Free&series=12.0"
-        );
-        pageLinks.add(
-                "https://www.odoo.com/apps/modules/category/Purchases/browse/page/3?price=Free&series=12.0"
-        );
-        pageLinks.add(
-                "https://www.odoo.com/apps/modules/category/Purchases/browse/page/4?price=Free&series=12.0"
-        );
-
+        for (int i = 1; i <= 10; i++) {
+            pageLinks.add(
+                    "https://apps.odoo.com/apps/modules/category/Website/browse/page/" + i + "?price=Paid&series=12.0"
+            );
+        }
         new OdooWebCrawler().getPageLinks(pageLinks);
     }
 
@@ -91,6 +83,9 @@ public class OdooWebCrawler {
                 String link = anApp.select("a").attr("abs:href");
                 hasilSatuApp.put("Link", link);
 
+                String summary = anApp.select(".loempia_panel_summary").text();
+                hasilSatuApp.put("Fungsi / Link Fungsi", summary);
+
                 hasilSatuApp = innerPage(link, hasilSatuApp);
 
                 writeRow(counter++);
@@ -105,6 +100,9 @@ public class OdooWebCrawler {
         Row row = sheet.createRow(rowNumber);
 
         CellStyle rowStyle = workbook.createCellStyle();
+        rowStyle.setWrapText(true);
+        row.setHeight((short) 1000);
+        rowStyle.setVerticalAlignment(VerticalAlignment.TOP);
 
         XSSFFont font = workbook.createFont();
         font.setFontName("Arial");
@@ -116,7 +114,7 @@ public class OdooWebCrawler {
         cell.setCellStyle(rowStyle);
 
         cell = row.createCell(1);
-        cell.setCellValue("30 April 2020");
+        cell.setCellValue("02 Mei 2020");
         cell.setCellStyle(rowStyle);
 
         cell = row.createCell(2);
@@ -335,7 +333,7 @@ public class OdooWebCrawler {
     public void cetak() throws IOException {
         for (int i = 0; i < 26; i++) {
             sheet.autoSizeColumn(i, true);
-            sheet.setColumnWidth(i, sheet.getColumnWidth(i) + 600);
+            sheet.setColumnWidth(i, Math.min(sheet.getColumnWidth(i) + 600, 10000));
         }
 
         File currDir = new File(".");
