@@ -1,3 +1,5 @@
+Archived. Tidak lagi di-maintain.
+
 # OdooModuleWebScraper
 Scrap Odoo App (Module) Store data to Excel File
 
